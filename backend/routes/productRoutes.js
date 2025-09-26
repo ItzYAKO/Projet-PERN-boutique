@@ -3,9 +3,8 @@ import { createProduct, getAllProducts } from "../controllers/productController.
 
 const router = expres.Router();
 
-router.get("/", getAllProducts.js)
+router.get("/", getAllProducts);
 
-router.post("/", createProduct)
-
+router.post("/", createProduct);
 
 export default router;

@@ -4,7 +4,10 @@ import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import { sql } from "./config/db.js"; // ✅ Import manquant
+
 import productRoutes from "./routes/productRoutes.js";
+
 
 dotenv.config();
 
@@ -19,6 +22,25 @@ app.use(morgan("dev")); // log the request
 
 app.use("/api/products", productRoutes);
 
-app.listen(PORT, () => {
-    console.log("serveur is running on port " + PORT);
-});
+async function initDB() {
+    try {
+        await sql` 
+        CREATE TABLE IF NOT EXISTS products (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(225) NOT NULL,
+            image VARCHAR(225) NOT NULL,
+            price DECIMAL(10, 2) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`;
+        console.log("Database initialized");
+    } catch (error) {
+        console.log(" Error initializing database: ", error);
+    }
+}
+
+
+initDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+})
